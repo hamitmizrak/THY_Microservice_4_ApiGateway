@@ -1,0 +1,80 @@
+
+# Eureka Service
+# http://localhost:8761
+#http://localhost:8761/eureka/apps
+#http://localhost:8761/eureka/apps/address-service
+#http://localhost:8761/actuator/health
+#
+## Config Service
+## http://localhost:8888
+#http://localhost:8888/actuator/health
+#http://localhost:8888/health/check
+#http://localhost:8888/config-client/default/master
+#
+## Api Gateway Service
+## http://localhost:7777
+#http://localhost:7777/actuator/health
+#
+## Address Service
+## http://localhost:1111
+#http://localhost:1111/actuator/health
+#http://localhost:1111/api/address
+#http://localhost:8888/address-service/default
+#
+## Customer Service
+## http://localhost:2222
+#http://localhost:2222/actuator/health
+#
+## GitHub Addresleri
+#https://github.com/hamitmizrak/THY_1_EurekaServer
+#https://github.com/hamitmizrak/Thy_microservice_2_ConfigServer
+#https://github.com/hamitmizrak/config-repo
+#https://github.com/hamitmizrak/THY_Microservice_4_ApiGateway
+
+############################################################
+# TEST ICIN
+# http://localhost:1111/api/address
+############################################################
+# Server Port
+server:
+  port: 7777
+
+
+# Api Gateway Config
+spring:
+  application:
+    name: api-gateway  # API Gateway uygulaması için bir ad tanımlanıyor
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin  # Çakışan "Access-Control-Allow-Origin" başlıklarını önlemek için varsayılan bir filtre
+      routes:
+        - id: address-service  # Rota kimliği; burada "address-service" olarak adlandırılmış
+          uri: lb://ADDRESS-SERVICE  # "address-service" mikroservisine yük dengeleme yaparak (lb - load balancing) yönlendirme yapılır
+          predicates:
+            - Path=/address/**  # "/address/**" yolu ile başlayan tüm istekleri bu rotaya yönlendiren koşul
+          filters:
+            - AddRequestHeader=X-Request-Source, Gateway  # Tüm isteklere "X-Request-Source: Gateway" başlığını ekleyen filtre
+            - RewritePath=/address/(?<segment>.*), /${segment}  # Gerekirse URL'yi değiştirir, "/address/" kısmını kaldırıp kalan kısmı mikroservise iletir
+
+# Eureka için genel kurallar
+# Dikkat: Api Gateway, Eureka kayıt olarak diğer servisler arasında köprü oluşturmakla görevli
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/  # Eureka sunucusunun URL'si, API Gateway'in mikroservisleri keşfetmesi için kullanılır
+    fetchRegistry: true  # Eureka’dan servis kayıtlarının alınmasını sağlar
+    registerWithEureka: true  # API Gateway'in Eureka'ya kaydolmasını sağlar
+
+# Logging
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG  # API Gateway işlemleri için log seviyesini "DEBUG" yaparak daha detaylı loglama sağlar (geliştirme için)
+    root: info
+
+#  bu da API Gateway'in sağlık durumu ve izleme
+management:
+  endpoints:
+    web:
+      exposure:
+        include: gateway  # "gateway" yönetim endpoint’ini açar, bu da API Gateway'in sağlık durumu ve izleme bilgilerini almak için kullanılır
