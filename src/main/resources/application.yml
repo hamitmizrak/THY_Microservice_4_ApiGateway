@@ -34,11 +34,12 @@
 ############################################################
 # TEST ICIN
 # http://localhost:1111/api/address
+# http://localhost:7777/address/api/address
+# http://localhost:2222/api/customer
 ############################################################
 # Server Port
 server:
   port: 7777
-
 
 # Api Gateway Config
 spring:
@@ -56,6 +57,16 @@ spring:
           filters:
             - AddRequestHeader=X-Request-Source, Gateway  # Tüm isteklere "X-Request-Source: Gateway" başlığını ekleyen filtre
             - RewritePath=/address/(?<segment>.*), /${segment}  # Gerekirse URL'yi değiştirir, "/address/" kısmını kaldırıp kalan kısmı mikroservise iletir
+
+        - id: customer-service  # Yeni rota kimliği; burada "customer-service" olarak adlandırılmış
+          uri: lb://CUSTOMER-SERVICE  # "customer-service" mikroservisine yük dengeleme ile yönlendirme yapılır
+          predicates:
+            - Path=/customer/**  # "/customer/**" yolu ile başlayan tüm istekleri bu rotaya yönlendiren koşul
+          filters:
+            - AddRequestHeader=X-Request-Source, Gateway  # Tüm isteklere "X-Request-Source: Gateway" başlığını ekleyen filtre
+            - RewritePath=/customer/(?<segment>.*), /${segment}  # Gerekirse URL'yi değiştirir, "/customer/" kısmını kaldırıp kalan kısmı mikroservise iletir
+  main:
+    web-application-type: reactive  # Spring Webflux yerine yaz
 
 # Eureka için genel kurallar
 # Dikkat: Api Gateway, Eureka kayıt olarak diğer servisler arasında köprü oluşturmakla görevli
