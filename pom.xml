@@ -1,51 +1,155 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<!--
+	  | Spring Boot Sürümü | Spring Cloud Sürümü (Release Train)
+	  | ++++++++++++++++++ | +++++++++++++++++++++++++++++++++++++++++
+	  | 2.4.x              | 2020.0.x (Kod adı: Ilford)
+	  | 2.5.x - 2.7.x      | 2021.x (Kod adı: Jubilee)
+	  | 3.0.x - 3.2.x      | 2022.x (Kod adı: Kilburn)
+	  | 3.3.x ve sonrası   | 2023.x ve sonrası
+	-->
+
+
 	<modelVersion>4.0.0</modelVersion>
+
+	<!--parent-->
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.3.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
+	<!--for project information-->
 	<groupId>com.hamitmizrak</groupId>
 	<artifactId>_4_ApiGateway</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>_4_ApiGateway</name>
 	<description>_4_ApiGateway</description>
-	<url/>
+
+
+	<url>https://github.com/hamitmizrak/THY_1_EurekaServer.git</url>
 	<licenses>
-		<license/>
+		<license>
+			<name>MIT License</name>
+			<url>https://opensource.org/licenses/MIT</url>
+			<distribution>repo</distribution>
+		</license>
 	</licenses>
 	<developers>
-		<developer/>
+		<developer>
+			<id>hamitmizrak</id>
+			<name>Hamit Mızrak</name>
+			<email>hamitmizrak@gmail.com</email>
+		</developer>
 	</developers>
 	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
+		<connection>scm:git:https://github.com/hamitmizrak/THY_1_EurekaServer.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/hamitmizrak/THY_1_EurekaServer.git</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/hamitmizrak/THY_1_EurekaServer.git</url>
 	</scm>
+
+	<!--
+    war: java EE için kullanalım. JSP,servlet,html,css3
+    jar: Spring Boot için kullanalım
+    -->
+	<!--apache tomcat manuel için war ekliyorum-->
+	<!--<packaging>war</packaging>-->
+	<packaging>jar</packaging>
+
+
+	<!--properties-->
 	<properties>
+		<encoding>UTF-8</encoding>
 		<java.version>17</java.version>
+
+		<!--for maven-->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+		<!--SonarQube Ve Maven İçin Gerekli-->
+		<maven.compiler.release>17</maven.compiler.release>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
+
+		<!--Spring Cloud Config Server-->
 		<spring-cloud.version>2023.0.3</spring-cloud.version>
 	</properties>
+
+	<!--  dependencies -->
 	<dependencies>
+
+		<!--Api gateway-->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-gateway-mvc</artifactId>
+			<artifactId>spring-cloud-starter-gateway</artifactId>
 		</dependency>
+
+		<!--webflux-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+
+		<!--eureka-client-->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
 
+		<!--starter-actuator-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<!--security-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-crypto</artifactId>
+		</dependency>
+
+		<!--oauth2-client-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-client</artifactId>
+		</dependency>
+
+		<!--JWT-->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>0.11.5</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>0.11.5</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId> <!-- or 'jjwt-gson' for Gson support -->
+			<version>0.11.5</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!--Test-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -60,11 +164,35 @@
 
 	<build>
 		<plugins>
+			<!-- Maven Compiler Plugin, Java kaynak kodunun hedef sürümde derlenmesini sağlar.
+                 Java 17 kullanımı için kaynak ve hedef sürüm ayarlanmıştır. -->
 			<plugin>
+				<!-- Apache Maven Compiler Plugin'in grup kimliğini tanımlar -->
+				<groupId>org.apache.maven.plugins</groupId>
+
+				<!-- Maven Compiler Plugin'in kimliğini belirtir -->
+				<artifactId>maven-compiler-plugin</artifactId>
+
+				<!-- Plugin'in versiyonunu belirtir. Burada "3.5.1" versiyonu kullanılıyor -->
+				<version>3.5.1</version>
+
+				<!-- Bu kısım, Maven Compiler Plugin'in konfigürasyonunu içerir -->
+				<configuration>
+					<!-- Kaynak kodun derlenmesi için kullanılan Java sürümü; Java 17 olarak belirlenmiştir -->
+					<source>17</source>
+					<!-- Derlenmiş kodun hedef sürümü; Java 17 olarak ayarlanmıştır -->
+					<target>17</target>
+				</configuration>
+			</plugin>
+
+			<!-- Spring Boot Maven Plugin, Spring Boot uygulamalarını paketlemek ve çalıştırmak için kullanılır. -->
+			<plugin>
+				<!-- Spring Boot Maven Plugin'in grup kimliğini belirtir -->
 				<groupId>org.springframework.boot</groupId>
+
+				<!-- Spring Boot Maven Plugin'in kimliğini belirtir -->
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
