@@ -50,21 +50,29 @@ spring:
       default-filters:
         - DedupeResponseHeader=Access-Control-Allow-Origin  # Çakışan "Access-Control-Allow-Origin" başlıklarını önlemek için varsayılan bir filtre
       routes:
-        - id: address-service  # Rota kimliği; burada "address-service" olarak adlandırılmış
-          uri: lb://ADDRESS-SERVICE  # "address-service" mikroservisine yük dengeleme yaparak (lb - load balancing) yönlendirme yapılır
+        # Address Service Route
+        - id: address-service
+          uri: lb://address-service
           predicates:
-            - Path=/address/**  # "/address/**" yolu ile başlayan tüm istekleri bu rotaya yönlendiren koşul
+            - Path=/api/addresses/**
           filters:
-            - AddRequestHeader=X-Request-Source, Gateway  # Tüm isteklere "X-Request-Source: Gateway" başlığını ekleyen filtre
-            - RewritePath=/address/(?<segment>.*), /${segment}  # Gerekirse URL'yi değiştirir, "/address/" kısmını kaldırıp kalan kısmı mikroservise iletir
+            - RewritePath=/api/addresses/(?<remaining>.*), /$\\{remaining}
 
-        - id: customer-service  # Yeni rota kimliği; burada "customer-service" olarak adlandırılmış
-          uri: lb://CUSTOMER-SERVICE  # "customer-service" mikroservisine yük dengeleme ile yönlendirme yapılır
+        # Customer Service Route
+        - id: customer-service
+          uri: lb://customer-service
           predicates:
-            - Path=/customer/**  # "/customer/**" yolu ile başlayan tüm istekleri bu rotaya yönlendiren koşul
+            - Path=/api/customers/**
           filters:
-            - AddRequestHeader=X-Request-Source, Gateway  # Tüm isteklere "X-Request-Source: Gateway" başlığını ekleyen filtre
-            - RewritePath=/customer/(?<segment>.*), /${segment}  # Gerekirse URL'yi değiştirir, "/customer/" kısmını kaldırıp kalan kısmı mikroservise iletir
+            - RewritePath=/api/customers/(?<remaining>.*), /$\\{remaining}
+
+        #- id: customer-service  # Yeni rota kimliği; burada "customer-service" olarak adlandırılmış
+        #  uri: lb://CUSTOMER-SERVICE  # "customer-service" mikroservisine yük dengeleme ile yönlendirme yapılır
+        #  predicates:
+        #    - Path=/customer/**  # "/customer/**" yolu ile başlayan tüm istekleri bu rotaya yönlendiren koşul
+        #  filters:
+        #    - AddRequestHeader=X-Request-Source, Gateway  # Tüm isteklere "X-Request-Source: Gateway" başlığını ekleyen filtre
+        #    - RewritePath=/customer/(?<segment>.*), /${segment}  # Gerekirse URL'yi değiştirir, "/customer/" kısmını kaldırıp kalan kısmı mikroservise iletir
   main:
     web-application-type: reactive  # Spring Webflux yerine yaz
 
