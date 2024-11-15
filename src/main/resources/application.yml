@@ -36,6 +36,8 @@
 # http://localhost:1111/api/address
 # http://localhost:7777/address/api/address
 # http://localhost:2222/api/customer
+# http://localhost:2222/api/customer/list
+# http://localhost:1111/api/address/find
 ############################################################
 # Server Port
 server:
@@ -51,20 +53,20 @@ spring:
         - DedupeResponseHeader=Access-Control-Allow-Origin  # Çakışan "Access-Control-Allow-Origin" başlıklarını önlemek için varsayılan bir filtre
       routes:
         # Address Service Route
-        - id: address-service
-          uri: lb://address-service
+        - id: address-service  # Yeni rota kimliği; burada "customer-service" olarak adlandırılmış
+          uri: lb://address-service # "customer-service" mikroservisine yük dengeleme ile yönlendirme yapılır
           predicates:
-            - Path=/api/addresses/**
+            - Path=/api/address/** # "/api/address**" yolu ile başlayan tüm istekleri bu rotaya yönlendiren koşul
           filters:
-            - RewritePath=/api/addresses/(?<remaining>.*), /$\\{remaining}
+            - RewritePath=/api/address/(?<remaining>.*), /$\\{remaining} # Gerekirse URL'yi değiştirir, "/api/address/" kısmını kaldırıp kalan kısmı mikroservise iletir
 
         # Customer Service Route
-        - id: customer-service
-          uri: lb://customer-service
+        - id: customer-service  # Yeni rota kimliği; burada "customer-service" olarak adlandırılmış
+          uri: lb://customer-service # "customer-service" mikroservisine yük dengeleme ile yönlendirme yapılır
           predicates:
-            - Path=/api/customers/**
+            - Path=/api/customer/** # "/api/address**" yolu ile başlayan tüm istekleri bu rotaya yönlendiren koşul
           filters:
-            - RewritePath=/api/customers/(?<remaining>.*), /$\\{remaining}
+            - RewritePath=/api/customer/(?<remaining>.*), /$\\{remaining} # Gerekirse URL'yi değiştirir, "/api/address/" kısmını kaldırıp kalan kısmı mikroservise iletir
 
         #- id: customer-service  # Yeni rota kimliği; burada "customer-service" olarak adlandırılmış
         #  uri: lb://CUSTOMER-SERVICE  # "customer-service" mikroservisine yük dengeleme ile yönlendirme yapılır
