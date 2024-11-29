@@ -28,9 +28,9 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>_4_ApiGateway</name>
     <description>_4_ApiGateway</description>
-
-
     <url>https://github.com/hamitmizrak/THY_1_EurekaServer.git</url>
+
+
     <licenses>
         <license>
             <name>MIT License</name>
@@ -38,6 +38,7 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
     <developers>
         <developer>
             <id>hamitmizrak</id>
@@ -45,6 +46,7 @@
             <email>hamitmizrak@gmail.com</email>
         </developer>
     </developers>
+
     <scm>
         <connection>scm:git:https://github.com/hamitmizrak/THY_1_EurekaServer.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/hamitmizrak/THY_1_EurekaServer.git</developerConnection>
@@ -129,12 +131,14 @@
             <artifactId>jjwt-api</artifactId>
             <version>0.11.5</version>
         </dependency>
+
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-impl</artifactId>
             <version>0.11.5</version>
             <scope>runtime</scope>
         </dependency>
+
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId> <!-- or 'jjwt-gson' for Gson support -->

@@ -41,11 +41,14 @@ public class SecurityConfig {
         //.oauth2Login();  // OAuth2 veya JWT doğrulaması için ek yapılandırmalar yapılabilir
         return http.build(); // Güvenlik yapılandırmasını oluşturur.
     }
+
+
     // Şifreleri şifrelemek için PasswordEncoder bean’i tanımlıyoruz.
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(); // BCrypt algoritması kullanılarak şifreleme yapılır.
     }
+
 
     // Bellek içinde kullanıcı bilgilerini yöneten bir MapReactiveUserDetailsService tanımlıyoruz.
     @Bean
